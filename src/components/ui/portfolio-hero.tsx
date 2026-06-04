@@ -1017,9 +1017,9 @@ export default function Component() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} LAKINDU PERERA. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[#C3E41D] transition-colors">GitHub</a>
-            <a href="#" className="hover:text-[#C3E41D] transition-colors">LinkedIn</a>
-            <a href="#" className="hover:text-[#C3E41D] transition-colors">Twitter</a>
+            <a href="https://github.com/LAKEY82?tab=overview&from=2026-06-01&to=2026-06-04" className="hover:text-[#C3E41D] transition-colors">GitHub</a>
+            <a href="https://www.linkedin.com/in/lakindu-perera-2988b91b5/" className="hover:text-[#C3E41D] transition-colors">LinkedIn</a>
+            <a href="https://www.upwork.com/freelancers/~01aaf9522a8cf4374a?mp_source=share" className="hover:text-[#C3E41D] transition-colors">Upwork</a>
           </div>
         </div>
       </footer>
