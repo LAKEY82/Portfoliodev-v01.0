@@ -1,6 +1,45 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Register GSAP ScrollTrigger plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 import { Menu, X, ChevronDown, Monitor, Smartphone, Database, PenTool, ArrowUpRight, MessageSquare, Briefcase } from "lucide-react";
+
+// Simple CountUp component for animating numbers on scroll
+const CountUp: React.FC<{ target: number; duration?: number; suffix?: string }> = ({ target, duration = 2000, suffix = "" }) => {
+  const [count, setCount] = React.useState(0);
+  const startTimeRef = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    const step = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      const progress = timestamp - startTimeRef.current;
+      const progressRatio = Math.min(progress / duration, 1);
+      setCount(Math.floor(progressRatio * target));
+      if (progress < duration) {
+        requestAnimationFrame(step);
+      } else {
+        setCount(target); // ensure final value
+      }
+    };
+    requestAnimationFrame(step);
+    return () => {
+      startTimeRef.current = null;
+    };
+  }, [target, duration]);
+
+  return <>{count}{suffix}</>;
+};
 import profileImage from "@/assets/IMG_0269.jpg";
+import caffe from "../../assets/Images/cafe1.png";
+import restaurent from "../../assets/Images/restaurent.png";
+import hotzy from "../../assets/Images/hotzy.png";
+import damro from "../../assets/Images/damro.png";
+import wisepath from "../../assets/Images/wisepath.png";
+import wisepathmobile from "../../assets/Images/wpmobile.png";
 // Inline Button component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className = "", children, ...props }, ref) => {
@@ -35,47 +74,47 @@ const BlurText: React.FC<BlurTextProps> = ({
   className = "",
   style,
 }) => {
-  const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, []);
-
+  // Split text into segments
   const segments = useMemo(() => {
     return animateBy === "words" ? text.split(" ") : text.split("");
   }, [text, animateBy]);
 
+  useEffect(() => {
+    if (!ref.current) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ref.current,
+          start: "top 90%",
+          toggleActions: "restart none none reverse",
+        },
+      });
+      tl.fromTo(
+        ref.current!.children,
+        {
+          opacity: 0,
+          y: direction === "top" ? -20 : 20,
+          filter: "blur(10px)",
+        },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          ease: "power2.out",
+          stagger: delay / 1000,
+          duration: 0.5,
+        }
+      );
+    }, ref);
+    return () => ctx.revert();
+  }, [delay, direction, segments]);
+
   return (
     <p ref={ref} className={`inline-flex flex-wrap ${className}`} style={style}>
       {segments.map((segment, i) => (
-        <span
-          key={i}
-          style={{
-            display: "inline-block",
-            filter: inView ? "blur(0px)" : "blur(10px)",
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : `translateY(${direction === "top" ? "-20px" : "20px"})`,
-            transition: `all 0.5s ease-out ${i * delay}ms`,
-          }}
-        >
+        <span key={i} style={{ display: "inline-block" }}>
           {segment}
           {animateBy === "words" && i < segments.length - 1 ? "\u00A0" : ""}
         </span>
@@ -99,82 +138,111 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   variant = "slide-up",
   delay = 0,
   duration = 800,
-  threshold = 0.05,
+  threshold = 0.05, // kept for API compatibility
   className = "",
 }) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(true);
-          if (ref.current) observer.unobserve(ref.current);
-        }
-      },
-      { threshold }
-    );
+    if (!ref.current) return;
+    const init: any = {};
+    const anim: any = { duration: duration / 1000, ease: "power2.out", delay: delay / 1000 };
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, [threshold]);
-
-  const getVariantStyles = () => {
     switch (variant) {
       case "fade-in":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          filter: isIntersecting ? "blur(0px)" : "blur(8px)",
-        };
+        init.opacity = 0;
+        init.filter = "blur(8px)";
+        anim.opacity = 1;
+        anim.filter = "blur(0px)";
+        break;
       case "slide-up":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          transform: isIntersecting ? "translateY(0)" : "translateY(50px)",
-        };
+        init.opacity = 0;
+        init.y = 50;
+        anim.opacity = 1;
+        anim.y = 0;
+        break;
       case "slide-down":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          transform: isIntersecting ? "translateY(0)" : "translateY(-50px)",
-        };
+        init.opacity = 0;
+        init.y = -50;
+        anim.opacity = 1;
+        anim.y = 0;
+        break;
       case "slide-left":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          transform: isIntersecting ? "translateX(0)" : "translateX(50px)",
-        };
+        init.opacity = 0;
+        init.x = 50;
+        anim.opacity = 1;
+        anim.x = 0;
+        break;
       case "slide-right":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          transform: isIntersecting ? "translateX(0)" : "translateX(-50px)",
-        };
+        init.opacity = 0;
+        init.x = -50;
+        anim.opacity = 1;
+        anim.x = 0;
+        break;
       case "scale-up":
-        return {
-          opacity: isIntersecting ? 1 : 0,
-          transform: isIntersecting ? "scale(1)" : "scale(0.93)",
-        };
+        init.opacity = 0;
+        init.scale = 0.93;
+        anim.opacity = 1;
+        anim.scale = 1;
+        break;
       default:
-        return {};
+        break;
     }
-  };
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ref.current,
+        init,
+        {
+          ...anim,
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top 90%",
+            toggleActions: "restart none none reverse",
+          },
+        }
+      );
+    }, ref);
+
+    return () => ctx.revert();
+  }, [variant, delay, duration, threshold]);
+
+  // Apply initial styles to avoid flash of unstyled content
+  const initialStyle: any = {};
+  switch (variant) {
+    case "fade-in":
+      initialStyle.opacity = 0;
+      initialStyle.filter = "blur(8px)";
+      break;
+    case "slide-up":
+      initialStyle.opacity = 0;
+      initialStyle.transform = "translateY(50px)";
+      break;
+    case "slide-down":
+      initialStyle.opacity = 0;
+      initialStyle.transform = "translateY(-50px)";
+      break;
+    case "slide-left":
+      initialStyle.opacity = 0;
+      initialStyle.transform = "translateX(50px)";
+      break;
+    case "slide-right":
+      initialStyle.opacity = 0;
+      initialStyle.transform = "translateX(-50px)";
+      break;
+    case "scale-up":
+      initialStyle.opacity = 0;
+      initialStyle.transform = "scale(0.93)";
+      break;
+    default:
+      break;
+  }
 
   return (
     <div
       ref={ref}
       className={className}
-      style={{
-        ...getVariantStyles(),
-        transitionProperty: "opacity, transform, filter",
-        transitionDuration: `${duration}ms`,
-        transitionDelay: `${delay}ms`,
-        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)", // Ultra-smooth deceleration
-      }}
+      style={initialStyle}
     >
       {children}
     </div>
@@ -182,6 +250,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 };
 
 export default function Component() {
+  // WhatsApp floating button (fixed)
+  const whatsappNumber = "94772648062";
+  const whatsappLink = `https://wa.me/${whatsappNumber}`;
+  // Email floating button (fixed)
+  // const email = "verdentperera@gmail.com";
+  // const mailtoLink = `mailto:${email}`;
+
   const [isDark, setIsDark] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -231,12 +306,12 @@ export default function Component() {
     {
       title: "Web Apps",
       icon: <Monitor className="w-5 h-5 text-[#C3E41D]" />,
-      skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "Redux Toolkit", "GraphQL"]
+      skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "GraphQL"]
     },
     {
       title: "Mobile Apps",
       icon: <Smartphone className="w-5 h-5 text-[#C3E41D]" />,
-      skills: ["React Native", "Expo", "SwiftUI", "Android SDK", "App Store Deploy", "Push Notifications"]
+      skills: ["React Native", "Expo", "Android SDK", "App Store Deploy", "Push Notifications"]
     },
     {
       title: "Backend & DB",
@@ -252,36 +327,52 @@ export default function Component() {
 
   const projects = [
     {
-      title: "Apex SaaS Analytics Dashboard",
+      title: "Caffe Website",
       category: "Web Application",
-      description: "A real-time data analysis panel built with React, Vite, and Tailwind CSS. Integrated with dynamic charts and WebSockets for live server metrics.",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
+      description: "A real-time website for a local cafe, featuring dynamic menu updates, online ordering, and a custom CMS. Built with React, Tailwind CSS, and Vite for lightning-fast performance.",
+     image: caffe,
       tags: ["React", "TypeScript", "Tailwind CSS", "Recharts", "Vite"],
       link: "#"
     },
     {
-      title: "FitPulse Fitness Tracker",
-      category: "Mobile Application",
-      description: "A cross-platform React Native fitness app syncing natively with iOS HealthKit and Google Fit. Features workout timers, calorie counters, and offline storage.",
-      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800&auto=format&fit=crop",
-      tags: ["React Native", "Expo", "TypeScript", "iOS/Android", "WatermelonDB"],
-      link: "#"
-    },
-    {
-      title: "Zenith Headless Commerce",
+      title: "Restaurent Website",
       category: "Web Application",
-      description: "A lightning-fast, SEO-optimized headless e-commerce store with Shopify backend APIs. Achieved a 98+ Google Lighthouse performance score.",
-      image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
-      tags: ["Next.js", "Shopify API", "Tailwind CSS", "GraphQL", "Vercel"],
+      description: "A responsive website for a local restaurant, featuring a modern design, online reservation system, and integrated social media feeds. Built with React, Tailwind CSS, and Vite.",
+      image: restaurent,
+      tags: ["React", "TypeScript", "Tailwind CSS", "Vite", "Netlify"],
       link: "#"
     },
     {
-      title: "NomadStay Booking App",
-      category: "Mobile Application",
-      description: "A beautiful property search and travel booking mobile application. Includes maps integration, messaging, and Supabase real-time databases.",
-      image: "https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=800&auto=format&fit=crop",
-      tags: ["React Native", "Tailwind CSS", "Supabase", "Google Maps API"],
+      title: "A website redesign for Hotzy sauce",
+      category: "Web Application",
+      description: "A fan made, SEO-optimized headless product website for the Local hot sauce brand.",
+      image: hotzy,
+      tags: ["Next.js", "Tailwind CSS", "Vercel"],
       link: "#"
+    },
+    {
+      title: "Website redesign for Damro Furniture",
+      category: "Web Application",
+      description: "A modern, responsive website for a furniture retailer, featuring product showcases, online quoting, and seamless integration with their inventory management system. Built with React, Tailwind CSS, and Vite.",
+      image: damro,
+      tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
+      link: "#"
+    },
+    {
+      title: "Wisepath Web application",
+      category: "Web Application",
+      description: "A web application for an online learning platform, featuring interactive courses, progress tracking, and a modern UI. Built with React, TypeScript, and Tailwind CSS.",
+      image: wisepath,
+      tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
+      link: "https://wisepath.lk"
+    },
+    {
+      title: "Wisepath Mobile application",
+      category: "Mobile Application",
+      description: "The mobile application for Wisepath institute .",
+      image: wisepathmobile,
+      tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
+      link: "https://wisepath.lk/wp-content/uploads/2025/12/wisepath_android.apk"
     }
   ];
 
@@ -373,7 +464,7 @@ export default function Component() {
               fontFamily: "'Brush Script MT', 'Lucida Handwriting', cursive" 
             }}
           >
-            L
+            LP
           </div>
 
           {/* Theme Toggle */}
@@ -473,7 +564,7 @@ export default function Component() {
                 ABOUT<span className="text-[#C3E41D]">_</span>
               </h2>
               <p className="mt-4 text-neutral-500 text-lg" style={{ fontFamily: "'Antic', sans-serif" }}>
-                Based at the intersection of aesthetic design and clean architectures.
+                A passionate Software Engineer with a keen eye for designing innovation.
               </p>
             </ScrollReveal>
           </div>
@@ -482,7 +573,7 @@ export default function Component() {
           <div className="md:col-span-8 space-y-6 text-lg text-neutral-600 dark:text-neutral-300" style={{ fontFamily: "'Antic', sans-serif" }}>
             <ScrollReveal variant="slide-up" delay={100} duration={800}>
               <p>
-                Hi, I'm Lakindu. I design and build highly interactive, responsive web interfaces and native iOS & Android applications. As a freelance developer, I partner directly with founders and technical leaders to turn specifications into production-ready software.
+                Hi, I'm Lakindu. I design and build highly interactive, responsive web interfaces and iOS & Android applications. As a freelance developer, I partner directly with founders and technical leaders to turn specifications into production-ready software.
               </p>
             </ScrollReveal>
             
@@ -495,7 +586,7 @@ export default function Component() {
             {/* Quick Freelance stats */}
             <div className="grid grid-cols-3 gap-6 pt-6 border-t border-neutral-200 dark:border-neutral-800 text-center">
               <ScrollReveal variant="slide-up" delay={300} className="w-full">
-                <p className="text-3xl md:text-4xl font-bold text-[#C3E41D]" style={{ fontFamily: "'Fira Code', monospace" }}>5+</p>
+                <p className="text-3xl md:text-4xl font-bold text-[#C3E41D]" style={{ fontFamily: "'Fira Code', monospace" }}><CountUp target={5} suffix="+" /></p>
                 <p className="text-sm text-neutral-500 uppercase mt-1">Years Coding</p>
               </ScrollReveal>
               <ScrollReveal variant="slide-up" delay={400} className="w-full">
@@ -600,7 +691,7 @@ export default function Component() {
                     <img 
                       src={project.image} 
                       alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-fill transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-4 left-4 px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded bg-black/80 dark:bg-black/90 text-[#C3E41D] border border-neutral-800 font-mono">
                       {project.category}
@@ -735,70 +826,189 @@ export default function Component() {
                 </div>
                 <div className="flex items-center gap-3">
                   <MessageSquare className="w-5 h-5 text-[#C3E41D]" />
-                  <span className="text-neutral-600 dark:text-neutral-300">hello@lakinduperera.dev</span>
+                  <span className="text-neutral-600 dark:text-neutral-300">verdentperera@gmail.com</span>
                 </div>
               </div>
             </ScrollReveal>
           </div>
 
-          {/* Contact Form */}
-          <div className="md:col-span-7">
-            <form 
-              onSubmit={(e) => e.preventDefault()}
-              className="space-y-6"
-              style={{ fontFamily: "'Antic', sans-serif" }}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <ScrollReveal variant="slide-up" delay={100} duration={700}>
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-bold uppercase tracking-wider mb-2">Name</label>
-                    <input 
-                      type="text" 
-                      id="name"
-                      required
-                      placeholder="John Doe"
-                      className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black focus:border-[#C3E41D] dark:focus:border-[#C3E41D] focus:ring-1 focus:ring-[#C3E41D] outline-none transition-all text-foreground"
-                    />
-                  </div>
-                </ScrollReveal>
-                <ScrollReveal variant="slide-up" delay={200} duration={700}>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-bold uppercase tracking-wider mb-2">Email Address</label>
-                    <input 
-                      type="email" 
-                      id="email"
-                      required
-                      placeholder="john@example.com"
-                      className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black focus:border-[#C3E41D] dark:focus:border-[#C3E41D] focus:ring-1 focus:ring-[#C3E41D] outline-none transition-all text-foreground"
-                    />
-                  </div>
-                </ScrollReveal>
-              </div>
+{/* Contact Form */}
+<div className="md:col-span-7">
+  <form 
+    // ================================
+    // CHANGE THIS LINK:
+    // Replace YOUR_FORM_ID with your Formspree form ID
+    // Example:
+    // https://formspree.io/f/xabcd123
+    // ================================
+    action="https://formspree.io/f/xeewqbrw"
 
-              <ScrollReveal variant="slide-up" delay={300} duration={700}>
-                <div>
-                  <label htmlFor="project" className="block text-sm font-bold uppercase tracking-wider mb-2">Project Details</label>
-                  <textarea 
-                    id="project"
-                    rows={5}
-                    required
-                    placeholder="Describe your web or mobile app project (e.g. features, target platforms, timeline)..."
-                    className="w-full px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black focus:border-[#C3E41D] dark:focus:border-[#C3E41D] focus:ring-1 focus:ring-[#C3E41D] outline-none transition-all text-foreground resize-none"
-                  />
-                </div>
-              </ScrollReveal>
+    // Formspree requires POST method
+    method="POST"
 
-              <ScrollReveal variant="slide-up" delay={400} duration={700}>
-                <Button 
-                  type="submit" 
-                  className="w-full py-4 text-base font-bold bg-[#C3E41D] text-black hover:bg-opacity-95 font-mono"
-                  style={{ fontFamily: "'Fira Code', monospace" }}
-                >
-                  Send Proposal
-                </Button>
-              </ScrollReveal>
-            </form>
-          </div>
+    className="space-y-6"
+    style={{ fontFamily: "'Antic', sans-serif" }}
+  >
+
+    {/* 
+      Optional:
+      After successful submission Formspree redirects here.
+      Change this URL to your own thank-you page.
+    */}
+    <input
+      type="hidden"
+      name="_next"
+      value="https://yourdomain.com/thank-you"
+    />
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <ScrollReveal variant="slide-up" delay={100} duration={700}>
+        <div>
+          <label 
+            htmlFor="name" 
+            className="block text-sm font-bold uppercase tracking-wider mb-2"
+          >
+            Name
+          </label>
+
+          <input 
+            type="text"
+            id="name"
+
+            // Formspree uses this name
+            name="name"
+
+            required
+            placeholder="John Doe"
+
+            className="w-full px-4 
+            py-3 rounded-lg 
+            border border-neutral-200 
+            dark:border-neutral-800 
+            bg-white dark:bg-black 
+            focus:border-[#C3E41D] 
+            dark:focus:border-[#C3E41D] 
+            focus:ring-1 
+            focus:ring-[#C3E41D] 
+            outline-none 
+            transition-all 
+            text-foreground"
+          />
+        </div>
+      </ScrollReveal>
+
+
+      <ScrollReveal variant="slide-up" delay={200} duration={700}>
+        <div>
+
+          <label 
+            htmlFor="email" 
+            className="block text-sm font-bold uppercase tracking-wider mb-2"
+          >
+            Email Address
+          </label>
+
+
+          <input 
+            type="email"
+            id="email"
+
+            // Sender email
+            name="email"
+
+            required
+            placeholder="john@example.com"
+
+            className="w-full px-4 
+            py-3 rounded-lg 
+            border border-neutral-200 
+            dark:border-neutral-800 
+            bg-white dark:bg-black 
+            focus:border-[#C3E41D] 
+            dark:focus:border-[#C3E41D] 
+            focus:ring-1 
+            focus:ring-[#C3E41D] 
+            outline-none 
+            transition-all 
+            text-foreground"
+          />
+
+        </div>
+      </ScrollReveal>
+
+    </div>
+
+
+
+    <ScrollReveal variant="slide-up" delay={300} duration={700}>
+      <div>
+
+        <label 
+          htmlFor="project" 
+          className="block text-sm font-bold uppercase tracking-wider mb-2"
+        >
+          Project Details
+        </label>
+
+
+        <textarea 
+
+          id="project"
+
+          // Message content
+          name="project"
+
+          rows={5}
+          required
+
+          placeholder="Describe your web or mobile app project (e.g. features, target platforms, timeline)..."
+
+          className="w-full px-4 
+          py-3 rounded-lg 
+          border border-neutral-200 
+          dark:border-neutral-800 
+          bg-white dark:bg-black 
+          focus:border-[#C3E41D] 
+          dark:focus:border-[#C3E41D] 
+          focus:ring-1 
+          focus:ring-[#C3E41D] 
+          outline-none 
+          transition-all 
+          text-foreground 
+          resize-none"
+
+        />
+
+      </div>
+    </ScrollReveal>
+
+
+
+
+    <ScrollReveal variant="slide-up" delay={400} duration={700}>
+
+      <Button 
+        type="submit"
+
+        className="w-full py-4 
+        text-base font-bold 
+        bg-[#C3E41D] 
+        text-black 
+        hover:bg-opacity-95 
+        font-mono"
+
+        style={{ fontFamily: "'Fira Code', monospace" }}
+
+      >
+        Send Proposal
+      </Button>
+
+    </ScrollReveal>
+
+
+  </form>
+</div>
         </div>
       </section>
 
@@ -813,6 +1023,19 @@ export default function Component() {
           </div>
         </div>
       </footer>
+    {/* WhatsApp floating button */}
+    <a
+      href={whatsappLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed right-4 bottom-1/3 transform -translate-y-1/2 bg-[#25D366] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:opacity-90 z-50"
+      aria-label="Chat on WhatsApp"
+    >
+      {/* Simple WhatsApp icon using SVG */}
+     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-whatsapp" viewBox="0 0 16 16">
+  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+</svg>
+    </a>
     </div>
   );
 }
