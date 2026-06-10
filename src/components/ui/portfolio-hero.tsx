@@ -40,6 +40,7 @@ import hotzy from "../../assets/Images/hotzy.png";
 import damro from "../../assets/Images/damro.png";
 import wisepath from "../../assets/Images/wisepath.png";
 import wisepathmobile from "../../assets/Images/wpmobile.png";
+import life from "../../assets/Images/Mockup Page.png";
 // Inline Button component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className = "", children, ...props }, ref) => {
@@ -326,6 +327,14 @@ export default function Component() {
   ];
 
   const projects = [
+     {
+      title: "LifeLk",
+      category: "Web Application",
+      description: "A modern web dashboard built for Sri Lankans to access daily essential information in one place. View weather, fuel updates, exchange rates, holidays, news, and other useful live data through public APIs.",
+      image: life,
+      tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
+      link: "https://life-lk.vercel.app/"
+    },
     {
       title: "Caffe Website",
       category: "Web Application",
@@ -373,7 +382,8 @@ export default function Component() {
       image: wisepathmobile,
       tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
       link: "https://wisepath.lk/wp-content/uploads/2025/12/wisepath_android.apk"
-    }
+    },
+   
   ];
 
   const experience = [
