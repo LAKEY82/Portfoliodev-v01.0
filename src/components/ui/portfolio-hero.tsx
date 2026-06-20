@@ -40,6 +40,7 @@ import hotzy from "../../assets/Images/hotzy.png";
 import damro from "../../assets/Images/damro.png";
 import wisepath from "../../assets/Images/wisepath.png";
 import wisepathmobile from "../../assets/Images/wpmobile.png";
+import pdf from "../../assets/Images/Mockup Page (2).png"
 import life from "../../assets/Images/Mockup Page.png";
 // Inline Button component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
@@ -327,6 +328,14 @@ export default function Component() {
   ];
 
   const projects = [
+         {
+      title: "PDF-Swami",
+      category: "Web Application",
+      description: "A modern PDF editor with a sleek interface, built using React, TypeScript, and Tailwind CSS. It offers features like text editing, annotations, and form filling, all powered by a custom PDF rendering engine for smooth performance.",
+      image: pdf,
+      tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
+      link: "https://pdfswami.vercel.app/"
+    },
      {
       title: "LifeLk",
       category: "Web Application",
