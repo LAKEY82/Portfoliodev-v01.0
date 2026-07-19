@@ -42,6 +42,8 @@ import wisepath from "../../assets/Images/wisepath.png";
 import wisepathmobile from "../../assets/Images/wpmobile.png";
 import pdf from "../../assets/Images/Mockup Page (2).png"
 import life from "../../assets/Images/Mockup Page.png";
+import bin from "../../assets/Images/bin.png";
+import barista from "../../assets/Images/barista.png";
 // Inline Button component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className = "", children, ...props }, ref) => {
@@ -328,6 +330,22 @@ export default function Component() {
   ];
 
   const projects = [
+     {
+      title: "Barista Website Redesign",
+      category: "Web Application",
+      description: "A website redesign for the Sri Lankan brand Barista website developed using Framer.",
+      image: barista,
+      tags: ["Framer"],
+      link: "https://barista-redesign.framer.website/"
+    },
+      {
+      title: "Bing Chun Website Redesign",
+      category: "Web Application",
+      description: "A developed using framer as a redesign for the current website for the brand Bing Chun.",
+      image: bin,
+      tags: ["Framer"],
+      link: "https://bing-chun-redesign.framer.website/"
+    },
          {
       title: "PDF-Swami",
       category: "Web Application",
