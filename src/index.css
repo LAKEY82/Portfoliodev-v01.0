@@ -2,79 +2,271 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-}
-
+/* ------------------------------------------------------------------ */
+/* Colour system — dark is the brand default, light is opt-in.          */
+/* ------------------------------------------------------------------ */
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0c0c0b;
+    --surface: #161614;
+    --fg: #eeede7;
+    --muted: #8e8c84;          /* 5.7:1 on --bg */
+    --line: rgb(238 237 231 / 0.13);
+    --line-strong: rgb(238 237 231 / 0.28);
+    --accent: #c3e41d;         /* brand lime */
+    --accent-ink: #c3e41d;     /* accent used as text */
+    --accent-fg: #0c0c0b;      /* text on accent fills */
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #eeede7;
+    --surface: #e4e3dc;
+    --fg: #121210;
+    --muted: #5c5b55;          /* 5.7:1 on --bg */
+    --line: rgb(18 18 16 / 0.14);
+    --line-strong: rgb(18 18 16 / 0.3);
+    --accent: #c3e41d;
+    --accent-ink: #4f5c00;     /* darker lime keeps text contrast on light bg */
+    --accent-fg: #121210;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
+  /* Contrast panel (contact + footer): paper on the dark theme, ink on the light theme. */
+  :root .panel-invert,
+  :root[data-theme="dark"] .panel-invert {
+    color-scheme: light;
+    --bg: #eeede7;
+    --surface: #e4e3dc;
+    --fg: #121210;
+    --muted: #5c5b55;
+    --line: rgb(18 18 16 / 0.14);
+    --line-strong: rgb(18 18 16 / 0.3);
+    --accent-ink: #4f5c00;
+    --accent-fg: #121210;
   }
+  :root[data-theme="light"] .panel-invert {
+    color-scheme: dark;
+    --bg: #0c0c0b;
+    --surface: #161614;
+    --fg: #eeede7;
+    --muted: #8e8c84;
+    --line: rgb(238 237 231 / 0.13);
+    --line-strong: rgb(238 237 231 / 0.28);
+    --accent-ink: #c3e41d;
+    --accent-fg: #0c0c0b;
+  }
+  .panel-invert {
+    background: var(--bg);
+    color: var(--fg);
+  }
+
+  html {
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html.scroll-locked,
+  html.scroll-locked body {
+    overflow: hidden;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    /* No background here: the html element paints it, so the fixed column guides (z-index -1) stay visible. */
+    @apply font-sans text-fg antialiased;
+    font-stretch: 100%;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  section[tabindex="-1"]:focus {
+    outline: none;
+  }
+
+  img {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Typography primitives                                               */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .gutter {
+    padding-inline: clamp(1rem, 3.2vw, 3rem);
+  }
+
+  .type-display {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-stretch: 66%;
+    font-weight: 800;
+    /* The condensed width shrinks the space glyph too much; restore word separation. */
+    word-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .type-serif {
+    font-family: "Instrument Serif", ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+
+  .type-meta {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Line mask used by text reveals. */
+  .mask {
+    display: block;
+    overflow: hidden;
+    /* Room for descenders / italic overhang without clipping. */
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+
+  /* Rolling text hover: two stacked copies, the second slides in. */
+  .roll {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+    vertical-align: top;
+  }
+  .roll > span {
+    display: block;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .roll > span + span {
+    position: absolute;
+    inset: 0;
+    transform: translateY(105%);
+  }
+  .roll-host:hover .roll > span:first-child,
+  .roll-host:focus-visible .roll > span:first-child {
+    transform: translateY(-105%);
+  }
+  .roll-host:hover .roll > span + span,
+  .roll-host:focus-visible .roll > span + span {
+    transform: translateY(0);
+  }
+
+  /* Underline that draws in from the left on hover. */
+  .draw-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .draw-line:hover,
+  .draw-line:focus-visible,
+  .group:hover .draw-line {
+    background-position: 0% 100%;
+    background-size: 100% 1px;
+  }
+
+  /* Arrow that slides out and back in on hover. */
+  .arrow-swap {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+  }
+  .arrow-swap > svg {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .arrow-swap > svg + svg {
+    position: absolute;
+    inset: 0;
+    transform: translate(-110%, 110%);
+  }
+  .group:hover .arrow-swap > svg:first-child,
+  .group:focus-visible .arrow-swap > svg:first-child {
+    transform: translate(110%, -110%);
+  }
+  .group:hover .arrow-swap > svg + svg,
+  .group:focus-visible .arrow-swap > svg + svg {
+    transform: translate(0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Custom cursor (only activated on fine pointers by JS)               */
+/* ------------------------------------------------------------------ */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [role="button"] {
+  cursor: none;
+}
+html.has-cursor input,
+html.has-cursor textarea {
+  cursor: text;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header states, toggled by ScrollTrigger without React re-renders.   */
+/* ------------------------------------------------------------------ */
+.site-header[data-scrolled="true"] .header-bar {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border-color: var(--line);
+  padding-block: 0.6rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.site-header[data-scrolled="true"] .header-sub {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.nav-link[data-active="true"] {
+  color: var(--fg);
+}
+.nav-link[data-active="true"]::before {
+  transform: scale(1);
+}
+
+@keyframes scroll-cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+.scroll-cue {
+  animation: scroll-cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

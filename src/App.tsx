@@ -1,7 +1,7 @@
-import Demo from "./demo"
+import Portfolio from "@/components/Portfolio"
 
 function App() {
-  return <Demo />
+  return <Portfolio />
 }
 
 export default App

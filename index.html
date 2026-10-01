@@ -1,26 +1,64 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/src/assets/IMG_0269.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+    <meta name="theme-color" content="#0c0c0b" />
+
     <!-- Optimized title containing your full name -->
     <title>Lakindu Perera | Freelance Software Engineer & Developer Portfolio</title>
-    
+
     <!-- Meta tags for Google Search indexing -->
     <meta name="description" content="Official portfolio of Lakindu Perera. Professional freelance software engineer and developer specializing in building modern web applications." />
     <meta name="keywords" content="Lakindu Perera, Lakindu, Perera, Freelance, Software Engineer, Web Developer, React Developer, Portfolio" />
     <meta name="author" content="Lakindu Perera" />
+    <link rel="canonical" href="https://www.lakinduperera.pro/" />
 
     <!-- Open Graph tags for clean link previews on LinkedIn and X/Twitter -->
     <meta property="og:title" content="Lakindu Perera | Portfolio" />
     <meta property="og:description" content="Freelance Software Engineer and Developer Portfolio showcasing modern technical applications." />
     <meta property="og:url" content="https://lakinduperera.pro" />
     <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Lakindu Perera",
+        "url": "https://www.lakinduperera.pro/",
+        "jobTitle": "Freelance Web & Mobile App Developer",
+        "email": "mailto:verdentperera@gmail.com",
+        "sameAs": [
+          "https://github.com/LAKEY82",
+          "https://www.linkedin.com/in/lakindu-perera-2988b91b5/",
+          "https://www.upwork.com/freelancers/~01aaf9522a8cf4374a"
+        ]
+      }
+    </script>
+
+    <!-- Apply the saved theme before first paint to avoid a flash. -->
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+
+    <!-- Fonts: Archivo (display + text), Instrument Serif (editorial accents), JetBrains Mono (metadata) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,300..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="padding:2rem;font-family:sans-serif">Lakindu Perera — Freelance Web &amp; Mobile App Developer. Email: verdentperera@gmail.com</p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

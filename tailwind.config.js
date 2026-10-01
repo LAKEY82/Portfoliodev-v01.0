@@ -2,73 +2,44 @@
 import tailwindAnimate from "tailwindcss-animate"
 
 export default {
-  darkMode: ["class"],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
       colors: {
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
-        },
-        secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
-        },
-        destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
-        },
-        muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
-        },
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        fg: "var(--fg)",
+        muted: "var(--muted)",
+        line: "var(--line)",
         accent: {
           DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
-        },
-        popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
-        },
-        card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          ink: "var(--accent-ink)",
+          fg: "var(--accent-fg)",
         },
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      borderColor: {
+        DEFAULT: "var(--line)",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
+      fontFamily: {
+        sans: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ['"Instrument Serif"', "ui-serif", "Georgia", "serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "SFMono-Regular", "monospace"],
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      fontSize: {
+        // Fluid type scale — display sizes tuned to Archivo at 66% width (see .type-display).
+        mega: ["clamp(3.75rem, 14.5vw, 17rem)", { lineHeight: "0.82", letterSpacing: "-0.03em" }],
+        section: ["clamp(3.4rem, 11vw, 12.5rem)", { lineHeight: "0.82", letterSpacing: "-0.025em" }],
+        title: ["clamp(2.4rem, 4.8vw, 5.25rem)", { lineHeight: "0.88", letterSpacing: "-0.02em" }],
+        statement: ["clamp(1.6rem, 3.3vw, 3.25rem)", { lineHeight: "1.1", letterSpacing: "-0.022em" }],
+        lead: ["clamp(1rem, 1.1vw, 1.125rem)", { lineHeight: "1.6" }],
+        meta: ["0.6875rem", { lineHeight: "1.4", letterSpacing: "0.08em" }],
+      },
+      transitionTimingFunction: {
+        expo: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },
