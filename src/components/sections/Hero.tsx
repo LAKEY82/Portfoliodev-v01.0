@@ -87,7 +87,7 @@ export function Hero() {
           <span className="hero-portrait relative block h-[0.74em] w-[0.46em] shrink-0 overflow-hidden rounded-full bg-surface">
             <img
               src={profile.portrait}
-              alt=""
+              alt={`Portrait of ${profile.firstName} ${profile.lastName}`}
               data-critical
               width={539}
               height={610}

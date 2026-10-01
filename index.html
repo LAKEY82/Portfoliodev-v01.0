@@ -2,38 +2,74 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="/src/assets/IMG_0269.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0c0c0b" />
 
-    <!-- Optimized title containing your full name -->
-    <title>Lakindu Perera | Freelance Software Engineer & Developer Portfolio</title>
-
-    <!-- Meta tags for Google Search indexing -->
-    <meta name="description" content="Official portfolio of Lakindu Perera. Professional freelance software engineer and developer specializing in building modern web applications." />
-    <meta name="keywords" content="Lakindu Perera, Lakindu, Perera, Freelance, Software Engineer, Web Developer, React Developer, Portfolio" />
+    <!--
+      Global SEO metadata. This is a single-page Vite app, so the static <head> here is the
+      equivalent of a root `metadata` export: crawlers and link-preview bots read it without
+      running JavaScript. Canonical production URL everywhere: https://www.lakinduperera.pro/
+    -->
+    <title>Lakindu Perera — Software Engineer &amp; Full-Stack Developer</title>
+    <meta name="description" content="Portfolio of Lakindu Perera, a software engineer in Sri Lanka building web and mobile applications with React, Next.js, React Native, TypeScript and .NET." />
     <meta name="author" content="Lakindu Perera" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://www.lakinduperera.pro/" />
 
-    <!-- Open Graph tags for clean link previews on LinkedIn and X/Twitter -->
-    <meta property="og:title" content="Lakindu Perera | Portfolio" />
-    <meta property="og:description" content="Freelance Software Engineer and Developer Portfolio showcasing modern technical applications." />
-    <meta property="og:url" content="https://lakinduperera.pro" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
+    <!-- Icons: the "LP" brand mark from the site header. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
+    <!-- Open Graph (LinkedIn, Facebook, WhatsApp, Slack, …) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lakindu Perera" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://www.lakinduperera.pro/" />
+    <meta property="og:title" content="Lakindu Perera — Software Engineer &amp; Full-Stack Developer" />
+    <meta property="og:description" content="Web and mobile applications built with React, Next.js, React Native, TypeScript and .NET. Selected work, experience and contact." />
+    <meta property="og:image" content="https://www.lakinduperera.pro/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Lakindu Perera — portfolio home page" />
+
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lakindu Perera — Software Engineer &amp; Full-Stack Developer" />
+    <meta name="twitter:description" content="Web and mobile applications built with React, Next.js, React Native, TypeScript and .NET." />
+    <meta name="twitter:image" content="https://www.lakinduperera.pro/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Lakindu Perera — portfolio home page" />
+
+    <!-- Structured data: the site and the person it represents. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Lakindu Perera",
-        "url": "https://www.lakinduperera.pro/",
-        "jobTitle": "Freelance Web & Mobile App Developer",
-        "email": "mailto:verdentperera@gmail.com",
-        "sameAs": [
-          "https://github.com/LAKEY82",
-          "https://www.linkedin.com/in/lakindu-perera-2988b91b5/",
-          "https://www.upwork.com/freelancers/~01aaf9522a8cf4374a"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.lakinduperera.pro/#website",
+            "url": "https://www.lakinduperera.pro/",
+            "name": "Lakindu Perera",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://www.lakinduperera.pro/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://www.lakinduperera.pro/#person",
+            "name": "Lakindu Perera",
+            "url": "https://www.lakinduperera.pro/",
+            "jobTitle": "Software Engineer",
+            "email": "mailto:verdentperera@gmail.com",
+            "address": { "@type": "PostalAddress", "addressCountry": "LK" },
+            "knowsAbout": ["React", "Next.js", "React Native", "TypeScript", "JavaScript", ".NET"],
+            "sameAs": [
+              "https://github.com/LAKEY82",
+              "https://www.linkedin.com/in/lakindu-perera-2988b91b5/",
+              "https://www.upwork.com/freelancers/~01aaf9522a8cf4374a"
+            ]
+          }
         ]
       }
     </script>

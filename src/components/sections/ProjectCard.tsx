@@ -22,8 +22,11 @@ export function ProjectCard({ project, index, total }: ProjectCardProps) {
 
   const image = (
     <RevealImage
-      src={project.image}
-      alt={`${project.title} — screenshot`}
+      src={project.image.src}
+      srcSet={project.image.srcSet}
+      width={project.image.width}
+      height={project.image.height}
+      alt={project.image.alt}
       parallax={false}
       sizes="(min-width: 1024px) 58vw, 100vw"
       className="aspect-[16/10] w-full rounded-[3px]"

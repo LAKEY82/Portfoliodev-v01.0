@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 
 type RevealImageProps = {
   src: string;
+  /** Responsive candidates, e.g. "a-800.webp 800w, a.webp 1600w" — pair with `sizes`. */
+  srcSet?: string;
   alt: string;
   className?: string;
   imgClassName?: string;
@@ -23,6 +25,7 @@ type RevealImageProps = {
  */
 export function RevealImage({
   src,
+  srcSet,
   alt,
   className,
   imgClassName,
@@ -73,6 +76,7 @@ export function RevealImage({
         <img
           ref={img}
           src={src}
+          srcSet={srcSet}
           alt={alt}
           width={width}
           height={height}

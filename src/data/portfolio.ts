@@ -2,15 +2,25 @@
 // Edit text, links and projects here — components only render this data.
 
 import barista from "@/assets/Images/web/barista.webp";
+import baristaSmall from "@/assets/Images/web/barista-800.webp";
 import bingChun from "@/assets/Images/web/bing-chun.webp";
+import bingChunSmall from "@/assets/Images/web/bing-chun-800.webp";
 import pdfSwami from "@/assets/Images/web/pdf-swami.webp";
+import pdfSwamiSmall from "@/assets/Images/web/pdf-swami-800.webp";
 import lifeLk from "@/assets/Images/web/lifelk.webp";
+import lifeLkSmall from "@/assets/Images/web/lifelk-800.webp";
 import cafe from "@/assets/Images/web/cafe.webp";
+import cafeSmall from "@/assets/Images/web/cafe-800.webp";
 import restaurant from "@/assets/Images/web/restaurant.webp";
+import restaurantSmall from "@/assets/Images/web/restaurant-800.webp";
 import hotzy from "@/assets/Images/web/hotzy.webp";
+import hotzySmall from "@/assets/Images/web/hotzy-800.webp";
 import damro from "@/assets/Images/web/damro.webp";
+import damroSmall from "@/assets/Images/web/damro-800.webp";
 import wisepath from "@/assets/Images/web/wisepath.webp";
+import wisepathSmall from "@/assets/Images/web/wisepath-800.webp";
 import wisepathMobile from "@/assets/Images/web/wisepath-mobile.webp";
+import wisepathMobileSmall from "@/assets/Images/web/wisepath-mobile-800.webp";
 import portrait from "@/assets/Images/web/portrait.webp";
 
 export const profile = {
@@ -82,11 +92,30 @@ export const skillCategories = [
 /** Words used by the moving-typography marquee. */
 export const marqueeTech = ["React", "Next.js", "React Native", "TypeScript", "Node.js", "Supabase", "Framer"];
 
+export type ProjectImage = {
+  src: string;
+  /** Responsive candidates so small screens download the 800px file. */
+  srcSet: string;
+  width: number;
+  height: number;
+  /** Describes what the screenshot actually shows, not just the project name. */
+  alt: string;
+};
+
+/** Project screenshot at full size (1600w unless noted) plus its 800w variant. */
+const shot = (src: string, small: string, alt: string, width = 1600, height = 900): ProjectImage => ({
+  src,
+  srcSet: `${small} 800w, ${src} ${width}w`,
+  width,
+  height,
+  alt,
+});
+
 export type Project = {
   title: string;
   category: string;
   description: string;
-  image: string;
+  image: ProjectImage;
   tags: string[];
   /** Omit when the project has no public link. */
   link?: string;
@@ -99,7 +128,7 @@ export const projects: Project[] = [
     title: "Barista Website Redesign",
     category: "Web Application",
     description: "A website redesign for the Sri Lankan brand Barista website developed using Framer.",
-    image: barista,
+    image: shot(barista, baristaSmall, "Barista redesign home page on a laptop: the Barista wordmark repeated behind an iced coffee drink"),
     tags: ["Framer"],
     link: "https://barista-redesign.framer.website/",
   },
@@ -107,7 +136,7 @@ export const projects: Project[] = [
     title: "Bing Chun Website Redesign",
     category: "Web Application",
     description: "A website developed using Framer as a redesign for the current website of the brand Bing Chun.",
-    image: bingChun,
+    image: shot(bingChun, bingChunSmall, "Bing Chun redesign home page on a laptop with the headline “Freshly shaken bubble tea & cream” above a bubble tea cup"),
     tags: ["Framer"],
     link: "https://bing-chun-redesign.framer.website/",
   },
@@ -116,7 +145,7 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A modern PDF editor with a sleek interface, built using React, TypeScript, and Tailwind CSS. It offers features like text editing, annotations, and form filling, all powered by a custom PDF rendering engine for smooth performance.",
-    image: pdfSwami,
+    image: shot(pdfSwami, pdfSwamiSmall, "PDF-Swami landing page on a laptop with the headline “Free Forever & Private” and a Start For Free button"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     link: "https://pdfswami.vercel.app/",
   },
@@ -125,7 +154,7 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A modern web dashboard built for Sri Lankans to access daily essential information in one place. View weather, fuel updates, exchange rates, holidays, news, and other useful live data through public APIs.",
-    image: lifeLk,
+    image: shot(lifeLk, lifeLkSmall, "LifeLk dashboard on a laptop showing a weather forecast panel and a fuel status and station tracker"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     link: "https://life-lk.vercel.app/",
   },
@@ -134,7 +163,7 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A real-time website for a local cafe, featuring dynamic menu updates, online ordering, and a custom CMS. Built with React, Tailwind CSS, and Vite for lightning-fast performance.",
-    image: cafe,
+    image: shot(cafe, cafeSmall, "Ceylon Coffee Club cafe website on a laptop with the headline “Where Colombo’s Heritage Meets Modern Roast”"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Recharts", "Vite"],
   },
   {
@@ -142,14 +171,14 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A responsive website for a local restaurant, featuring a modern design, online reservation system, and integrated social media feeds. Built with React, Tailwind CSS, and Vite.",
-    image: restaurant,
+    image: shot(restaurant, restaurantSmall, "Ceylon Lagos by Gemigedara restaurant website on a laptop, with a lakeside dining photo and a Reserve a Table button"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Vite", "Netlify"],
   },
   {
     title: "Hotzy Sauce Redesign",
     category: "Web Application",
     description: "A fan made, SEO-optimized headless product website for the local hot sauce brand.",
-    image: hotzy,
+    image: shot(hotzy, hotzySmall, "Hotzy hot sauce website on a laptop with the headline “Pure taste. Pure Promise.” beside a Snake Bite sauce bottle"),
     tags: ["Next.js", "Tailwind CSS", "Vercel"],
   },
   {
@@ -157,7 +186,7 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A modern, responsive website for a furniture retailer, featuring product showcases, online quoting, and seamless integration with their inventory management system. Built with React, Tailwind CSS, and Vite.",
-    image: damro,
+    image: shot(damro, damroSmall, "Damro furniture store page on a laptop listing a velvet sofa, an oak dining table and a leather recliner with prices"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
   },
   {
@@ -165,7 +194,7 @@ export const projects: Project[] = [
     category: "Web Application",
     description:
       "A web application for an online learning platform, featuring interactive courses, progress tracking, and a modern UI. Built with React, TypeScript, and Tailwind CSS.",
-    image: wisepath,
+    image: shot(wisepath, wisepathSmall, "Wisepath Education web app on a laptop showing teacher selection cards and subject filters"),
     tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
     link: "https://wisepath.lk",
   },
@@ -173,7 +202,7 @@ export const projects: Project[] = [
     title: "Wisepath Mobile Application",
     category: "Mobile Application",
     description: "The mobile application for Wisepath institute.",
-    image: wisepathMobile,
+    image: shot(wisepathMobile, wisepathMobileSmall, "Two phones showing the Wisepath Education mobile app: the splash screen and the phone-number sign-up screen", 1070, 587),
     tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
     link: "https://wisepath.lk/wp-content/uploads/2025/12/wisepath_android.apk",
     linkLabel: "Download APK",
