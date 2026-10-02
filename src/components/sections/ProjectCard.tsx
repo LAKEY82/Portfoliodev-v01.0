@@ -65,7 +65,7 @@ export function ProjectCard({ project, index, total }: ProjectCardProps) {
                     <ArrowSwap className="h-4 w-4" />
                   </span>
                   <span className="draw-line pb-0.5">{label}</span>
-                  <span className="sr-only">(opens in a new tab)</span>
+                  <span className="sr-only">: {project.title} (opens in a new tab)</span>
                 </a>
               ) : (
                 <p className="type-meta text-muted">No public link</p>

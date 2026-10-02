@@ -34,6 +34,11 @@ function seoFiles(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), seoFiles()],
+  // Bundle these into the SSR prerender build: gsap and lenis ship ESM without "type": "module",
+  // which Node can't import directly.
+  ssr: {
+    noExternal: ["gsap", "@gsap/react", "lenis"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

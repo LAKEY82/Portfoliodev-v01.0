@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 type Theme = "dark" | "light";
 
+// The theme lives on <html data-theme> (set before paint by index.html). Reading it through
+// useSyncExternalStore keeps prerendering/hydration consistent: the server snapshot is the
+// brand default, and the client switches to the stored theme right after hydrating.
 const readTheme = (): Theme => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
+const serverTheme = (): Theme => "dark";
+const subscribe = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
+};
 
 /** Dark is the brand default; the choice persists across visits. */
 export function ThemeToggle({ className }: { className?: string }) {
-  const [theme, setTheme] = useState<Theme>(readTheme);
+  const theme = useSyncExternalStore(subscribe, readTheme, serverTheme);
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
@@ -18,7 +27,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     } catch {
       /* storage unavailable (private mode) — theme still applies for this visit */
     }
-    setTheme(next);
+    // No setState: the data-theme mutation above notifies useSyncExternalStore.
   };
 
   return (

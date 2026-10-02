@@ -94,7 +94,8 @@
   <body>
     <div id="root"></div>
     <noscript>
-      <p style="padding:2rem;font-family:sans-serif">Lakindu Perera — Freelance Web &amp; Mobile App Developer. Email: verdentperera@gmail.com</p>
+      <!-- The page content is prerendered; without JavaScript, drop the intro overlay so it stays readable. -->
+      <style>[aria-label="Loading portfolio"] { display: none !important; }</style>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

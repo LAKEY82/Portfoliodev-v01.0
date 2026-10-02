@@ -78,7 +78,7 @@ export function Hero() {
       {/* Name */}
       <h1
         className="hero-name type-display my-auto py-8 text-[clamp(3.5rem,min(26vw,calc(62svh-12.75rem)),30rem)] leading-[0.8] tracking-[-0.03em] md:py-4 md:text-[clamp(3.5rem,min(26.5vw,calc(62svh-12.75rem)),30rem)]"
-        aria-label={`${profile.firstName} ${profile.lastName} — ${profile.role}`}
+        aria-label={`${profile.firstName} ${profile.lastName}`}
       >
         <span className="mask">
           <Chars text={profile.firstName} />

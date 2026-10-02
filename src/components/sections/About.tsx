@@ -43,6 +43,7 @@ export function About() {
         title={
           <>
             Engineer by craft,
+            {" "}
             <br />
             <span className="type-serif text-accent-ink">designer</span> at heart
           </>

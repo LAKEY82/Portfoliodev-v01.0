@@ -204,8 +204,8 @@ export const projects: Project[] = [
     description: "The mobile application for Wisepath institute.",
     image: shot(wisepathMobile, wisepathMobileSmall, "Two phones showing the Wisepath Education mobile app: the splash screen and the phone-number sign-up screen", 1070, 587),
     tags: ["React", "TypeScript", "Tailwind CSS", "C# .Net"],
-    link: "https://wisepath.lk/wp-content/uploads/2025/12/wisepath_android.apk",
-    linkLabel: "Download APK",
+    // The APK URL (wisepath.lk/wp-content/uploads/2025/12/wisepath_android.apk) returned 404 and
+    // wisepath.lk publishes no replacement. Restore `link` + `linkLabel: "Download APK"` once one exists.
   },
 ];
 

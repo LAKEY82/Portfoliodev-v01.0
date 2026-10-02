@@ -68,6 +68,7 @@ export function Contact() {
 
       <RevealText as="h2" className="type-display mb-16 text-mega md:mb-24" stagger={0.1}>
         Have an idea?
+        {" "}
         <br />
         Let&rsquo;s <span className="type-serif text-accent-ink">build</span> it.
       </RevealText>
