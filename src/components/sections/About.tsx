@@ -1,5 +1,6 @@
 import { useRef, type RefObject } from "react";
 import { gsap, MQ, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { about, profile } from "@/data/portfolio";
 import { RevealText } from "@/components/motion/RevealText";
 import { Reveal } from "@/components/motion/Reveal";
@@ -8,8 +9,10 @@ import { SerifAmp } from "@/components/ui/SerifAmp";
 
 /** Counts stats up once when they scroll into view, writing straight to the DOM. */
 function useCountUp(scope: RefObject<HTMLElement | null>) {
+  const deferredMotion = useDeferredMotion();
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       gsap.matchMedia().add(MQ.motion, () => {
         const els = gsap.utils.toArray<HTMLElement>("[data-count]", scope.current);
         els.forEach((el) => {
@@ -20,14 +23,14 @@ function useCountUp(scope: RefObject<HTMLElement | null>) {
             v: target,
             duration: 1.8,
             ease: "power2.out",
-            scrollTrigger: { trigger: el, start: "top 90%", once: true },
+            scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
             onUpdate: () => (el.textContent = String(Math.round(counter.v))),
           });
         });
         return () => els.forEach((el) => (el.textContent = el.dataset.count ?? ""));
       });
     },
-    { scope },
+    { scope, dependencies: [deferredMotion] },
   );
 }
 

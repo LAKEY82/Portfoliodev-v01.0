@@ -1,5 +1,6 @@
 import { Fragment, useRef } from "react";
 import { MQ, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { cn } from "@/lib/utils";
 
 type MarqueeProps = {
@@ -21,8 +22,11 @@ export function Marquee({ items, duration = 28, direction = 1, variant = "solid"
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
         const setX = gsap.quickSetter(track.current, "xPercent");
@@ -54,7 +58,7 @@ export function Marquee({ items, duration = 28, direction = 1, variant = "solid"
         return () => gsap.ticker.remove(tick);
       });
     },
-    { scope: root, dependencies: [duration, direction] },
+    { scope: root, dependencies: [deferredMotion, duration, direction] },
   );
 
   const group = (copy: number) => (

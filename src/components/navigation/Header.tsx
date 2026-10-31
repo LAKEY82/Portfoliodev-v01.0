@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { EASE, gsap, MQ, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useSiteReady } from "@/lib/site-ready";
+import { useIsHome, useNavHref } from "@/lib/page";
 import { navItems, profile } from "@/data/portfolio";
 import { AnimatedLink, RollText } from "@/components/ui/AnimatedLink";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -9,6 +10,8 @@ import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { cn } from "@/lib/utils";
 
 export function Header() {
+  const home = useIsHome();
+  const navHref = useNavHref();
   const root = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,12 +51,12 @@ export function Header() {
 
   useGSAP(
     () => {
-      if (!ready) return;
+      if (!ready || !home) return; // entrance only on the home page, where the preloader hides the header first
       gsap.matchMedia().add(MQ.motion, () => {
         gsap.from(".hdr-in", { yPercent: -120, opacity: 0, duration: 1.1, ease: EASE.expo, stagger: 0.05, delay: 0.5 });
       });
     },
-    { scope: root, dependencies: [ready] },
+    { scope: root, dependencies: [ready, home] },
   );
 
   return (
@@ -61,7 +64,7 @@ export function Header() {
       {/* z-10 keeps the bar (and its Close button) above the full-screen mobile menu. */}
       <div className="gutter relative z-10 pt-3 md:pt-4">
         <div className="header-bar -mx-3 flex items-center justify-between gap-4 rounded-full border border-transparent px-3 py-2 transition-[background-color,border-color,padding] duration-500 ease-expo md:-mx-4 md:px-4">
-          <a href="#home" className="hdr-in roll-host group flex items-center gap-3" aria-label={`${profile.firstName} ${profile.lastName} — back to top`}>
+          <a href={home ? "#home" : "/"} className="hdr-in roll-host group flex items-center gap-3" aria-label={home ? `${profile.firstName} ${profile.lastName} — back to top` : `${profile.firstName} ${profile.lastName} — home`}>
             <span className="type-display flex h-9 w-9 items-center justify-center rounded-full bg-accent text-[0.95rem] tracking-[-0.04em] text-accent-fg">
               LP
             </span>
@@ -78,7 +81,7 @@ export function Header() {
               {navItems.map((item) => (
                 <li key={item.href} className="hdr-in">
                   <AnimatedLink
-                    href={item.href}
+                    href={navHref(item.href)}
                     className={cn(
                       "nav-link relative text-sm text-muted transition-colors duration-300 hover:text-fg",
                       // active indicator dot
@@ -96,7 +99,7 @@ export function Header() {
             <ThemeToggle className="hdr-in" />
             <Magnetic className="hdr-in hidden md:inline-block" strength={0.25}>
               <a
-                href="#contact"
+                href={navHref("#contact")}
                 className="roll-host inline-flex items-center gap-2 rounded-full bg-fg px-4 py-2 text-sm font-medium text-bg transition-colors duration-500 hover:bg-accent hover:text-accent-fg"
               >
                 <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />

@@ -1,11 +1,14 @@
 import { useEffect, useRef } from "react";
 import { EASE, gsap, MQ, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { mailtoLink, navItems, profile, socials } from "@/data/portfolio";
+import { useNavHref } from "@/lib/page";
 import { AnimatedLink } from "@/components/ui/AnimatedLink";
 import { LocalTime } from "@/components/ui/LocalTime";
 import { SerifAmp } from "@/components/ui/SerifAmp";
 
 export function Footer() {
+  const navHref = useNavHref();
   const root = useRef<HTMLElement>(null);
   const wordmark = useRef<HTMLParagraphElement>(null);
   const wordmarkText = useRef<HTMLSpanElement>(null);
@@ -34,19 +37,22 @@ export function Footer() {
     return () => observer.disconnect();
   }, []);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       gsap.matchMedia().add(MQ.motion, () => {
         gsap.from(".wordmark-char", {
           yPercent: 100,
           duration: 1.2,
           ease: EASE.expo,
           stagger: 0.04,
-          scrollTrigger: { trigger: ".wordmark", start: "top 95%", once: true },
+          scrollTrigger: { trigger: ".wordmark", start: "top 95%", toggleActions: "play none none none" },
         });
       });
     },
-    { scope: root },
+    { scope: root, dependencies: [deferredMotion] },
   );
 
   return (
@@ -64,7 +70,7 @@ export function Footer() {
           <ul className="space-y-1.5">
             {navItems.map((item) => (
               <li key={item.href}>
-                <AnimatedLink href={item.href}>{item.label}</AnimatedLink>
+                <AnimatedLink href={navHref(item.href)}>{item.label}</AnimatedLink>
               </li>
             ))}
           </ul>
@@ -113,7 +119,7 @@ export function Footer() {
         <p>
           © {new Date().getFullYear()} {profile.firstName} {profile.lastName}. All rights reserved.
         </p>
-        <a href="#home" className="roll-host group inline-flex items-center gap-2 hover:text-fg">
+        <a href="#top" className="roll-host group inline-flex items-center gap-2 hover:text-fg">
           Back to top
           <span aria-hidden="true" className="inline-block transition-transform duration-500 ease-expo group-hover:-translate-y-1">
             ↑

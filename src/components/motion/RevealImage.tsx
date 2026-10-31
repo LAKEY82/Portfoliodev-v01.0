@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { EASE, MQ, gsap, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { cn } from "@/lib/utils";
 
 type RevealImageProps = {
@@ -14,6 +15,8 @@ type RevealImageProps = {
   sizes?: string;
   /** Scroll-linked drift of the image inside its frame (desktop only). */
   parallax?: boolean;
+  /** Frame aspect ratio as "w / h" when it varies per image (otherwise set one via className). */
+  aspect?: string;
   /** Load immediately (above the fold). */
   priority?: boolean;
 };
@@ -34,23 +37,27 @@ export function RevealImage({
   sizes = "(min-width: 768px) 66vw, 100vw",
   parallax = true,
   priority = false,
+  aspect,
 }: RevealImageProps) {
   const frame = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       const mm = gsap.matchMedia();
 
       mm.add(MQ.motion, () => {
         const tl = gsap.timeline({
-          scrollTrigger: { trigger: frame.current, start: "top 88%", once: true },
+          scrollTrigger: { trigger: frame.current, start: "top 88%", toggleActions: "play none none none" },
         });
         tl.fromTo(
           frame.current,
           { clipPath: "inset(100% 0% 0% 0%)" },
           { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: EASE.inOut },
-        ).fromTo(img.current, { scale: 1.3 }, { scale: 1.08, duration: 1.8, ease: EASE.expo }, 0);
+        ).fromTo(img.current, { scale: 1.3 }, { scale: parallax ? 1.08 : 1, duration: 1.8, ease: EASE.expo }, 0);
       });
 
       if (parallax) {
@@ -67,11 +74,11 @@ export function RevealImage({
         });
       }
     },
-    { scope: frame, dependencies: [parallax] },
+    { scope: frame, dependencies: [deferredMotion, parallax] },
   );
 
   return (
-    <div ref={frame} className={cn("relative overflow-hidden bg-surface", className)}>
+    <div ref={frame} className={cn("relative overflow-hidden bg-surface", className)} style={aspect ? { aspectRatio: aspect } : undefined}>
       <div className="h-full w-full transition-transform ease-expo [transition-duration:1200ms] group-hover:scale-[1.035]">
         <img
           ref={img}

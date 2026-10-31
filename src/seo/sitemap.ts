@@ -18,8 +18,12 @@ export type SitemapEntry = {
 };
 
 export const sitemapEntries: SitemapEntry[] = [
-  // The portfolio is a single page; its sections are anchors on this URL, not separate routes.
+  // Home page (its sections are anchors on this URL, not separate routes) and case studies.
   { path: "/" },
+  { path: "/work/hirelane" },
+  { path: "/work/barista" },
+  { path: "/work/bing-chun" },
+  { path: "/work/pdf-swami" },
 ];
 
 const escapeXml = (value: string) =>

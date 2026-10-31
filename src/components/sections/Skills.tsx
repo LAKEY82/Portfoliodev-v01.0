@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { EASE, gsap, MQ, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { skillCategories } from "@/data/portfolio";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { SerifAmp } from "@/components/ui/SerifAmp";
@@ -8,18 +9,21 @@ import { SerifAmp } from "@/components/ui/SerifAmp";
 export function Skills() {
   const root = useRef<HTMLElement>(null);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       gsap.matchMedia().add(MQ.motion, () => {
         gsap.utils.toArray<HTMLElement>(".skill-row", root.current).forEach((row) => {
           gsap
-            .timeline({ scrollTrigger: { trigger: row, start: "top 88%", once: true } })
+            .timeline({ scrollTrigger: { trigger: row, start: "top 88%", toggleActions: "play none none none" } })
             .from(row.querySelector(".skill-rule"), { scaleX: 0, duration: 1.3, ease: EASE.inOut })
             .from(row.querySelectorAll(".skill-in"), { yPercent: 105, duration: 1, ease: EASE.expo, stagger: 0.06 }, 0.2);
         });
       });
     },
-    { scope: root },
+    { scope: root, dependencies: [deferredMotion] },
   );
 
   return (

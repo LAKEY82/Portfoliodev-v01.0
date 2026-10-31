@@ -1,5 +1,6 @@
 import { useRef, type ElementType, type ReactNode } from "react";
 import { EASE, MQ, gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { cn } from "@/lib/utils";
 
 type RevealTextProps = {
@@ -30,8 +31,11 @@ export function RevealText({
 }: RevealTextProps) {
   const ref = useRef<HTMLElement>(null);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       const el = ref.current;
       if (!el) return;
       const mm = gsap.matchMedia();
@@ -66,7 +70,7 @@ export function RevealText({
               delay,
               stagger,
               ease: EASE.expo,
-              scrollTrigger: { trigger: el, start, once: true },
+              scrollTrigger: { trigger: el, start, toggleActions: "play none none none" },
               onComplete: () => {
                 revealed = true;
               },
@@ -76,7 +80,7 @@ export function RevealText({
         return () => split.revert();
       });
     },
-    { scope: ref, dependencies: [mode, delay, stagger, start] },
+    { scope: ref, dependencies: [deferredMotion, mode, delay, stagger, start] },
   );
 
   return (

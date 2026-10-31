@@ -1,6 +1,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { EASE, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
+import { useNavHref } from "@/lib/page";
 import { mailtoLink, navItems, profile, socials } from "@/data/portfolio";
 
 type MobileMenuProps = {
@@ -11,6 +12,7 @@ type MobileMenuProps = {
 
 /** Full-screen menu. A single paused timeline plays forward to open and reverses to close. */
 export function MobileMenu({ open, onClose, toggleRef }: MobileMenuProps) {
+  const navHref = useNavHref();
   const root = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
 
@@ -97,7 +99,7 @@ export function MobileMenu({ open, onClose, toggleRef }: MobileMenuProps) {
           {navItems.map((item, i) => (
             <li key={item.href} className="mask">
               <a
-                href={item.href}
+                href={navHref(item.href)}
                 onClick={onClose}
                 tabIndex={open ? 0 : -1}
                 className="mm-item group flex items-baseline gap-4 py-1"

@@ -39,6 +39,18 @@ export default defineConfig({
   ssr: {
     noExternal: ["gsap", "@gsap/react", "lenis"],
   },
+  build: {
+    rollupOptions: {
+      // One HTML entry per page; each is prerendered by scripts/prerender.mjs.
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        hirelane: path.resolve(__dirname, "work/hirelane.html"),
+        barista: path.resolve(__dirname, "work/barista.html"),
+        bingChun: path.resolve(__dirname, "work/bing-chun.html"),
+        pdfSwami: path.resolve(__dirname, "work/pdf-swami.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
