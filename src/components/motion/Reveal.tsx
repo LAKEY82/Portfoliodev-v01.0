@@ -1,5 +1,6 @@
 import { useRef, type ElementType, type ReactNode } from "react";
 import { EASE, MQ, gsap, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 
 type RevealProps = {
   children: ReactNode;
@@ -15,8 +16,11 @@ type RevealProps = {
 export function Reveal({ children, as: Tag = "div", className, delay = 0, stagger, y = 28 }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
 
+  const deferredMotion = useDeferredMotion();
+
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       const el = ref.current;
       if (!el) return;
       const mm = gsap.matchMedia();
@@ -29,11 +33,11 @@ export function Reveal({ children, as: Tag = "div", className, delay = 0, stagge
           delay,
           stagger,
           ease: EASE.expo,
-          scrollTrigger: { trigger: el, start: "top 90%", once: true },
+          scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
         });
       });
     },
-    { scope: ref },
+    { scope: ref, dependencies: [deferredMotion] },
   );
 
   return (

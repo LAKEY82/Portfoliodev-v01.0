@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { SiteReadyContext } from "@/lib/site-ready";
+import { useCallback, useEffect, useState } from "react";
+import { DeferredMotionContext, SiteReadyContext, type MotionPhase } from "@/lib/site-ready";
 import { marqueeTech } from "@/data/portfolio";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { Preloader } from "@/components/Preloader";
@@ -20,9 +20,21 @@ import { Footer } from "@/components/sections/Footer";
 export default function Portfolio() {
   const [ready, setReady] = useState(false);
   const onReveal = useCallback(() => setReady(true), []);
+  const [motionPhase, setMotionPhase] = useState<MotionPhase>("off");
+
+  // Set up below-the-fold scroll animations only after the hero intro has started and the
+  // main thread is idle. Deep links (#projects …) skip the wait so the target section animates.
+  useEffect(() => {
+    if (!ready) return;
+    const deepLink = location.hash.length > 1;
+    // Let the hero intro get going first; each component then enables itself in idle time.
+    const timer = window.setTimeout(() => setMotionPhase(deepLink ? "now" : "idle"), deepLink ? 0 : 900);
+    return () => window.clearTimeout(timer);
+  }, [ready]);
 
   return (
     <SiteReadyContext.Provider value={ready}>
+      <DeferredMotionContext.Provider value={motionPhase}>
       <SmoothScroll>
         <a
           href="#main"
@@ -49,6 +61,7 @@ export default function Portfolio() {
         <Footer />
         <WhatsAppButton />
       </SmoothScroll>
+      </DeferredMotionContext.Provider>
     </SiteReadyContext.Provider>
   );
 }

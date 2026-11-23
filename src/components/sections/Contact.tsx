@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { gsap, MQ, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { mailtoLink, profile, socials, whatsappLink } from "@/data/portfolio";
 import { RevealText } from "@/components/motion/RevealText";
 import { Reveal } from "@/components/motion/Reveal";
@@ -21,8 +22,10 @@ export function Contact() {
   const root = useRef<HTMLElement>(null);
 
   // Section transition: the paper panel opens from an inset, rounded card to full bleed as it arrives.
+  const deferredMotion = useDeferredMotion();
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       gsap.matchMedia().add(MQ.motion, () => {
         gsap.fromTo(
           root.current,
@@ -35,7 +38,7 @@ export function Contact() {
         );
       });
     },
-    { scope: root },
+    { scope: root, dependencies: [deferredMotion] },
   );
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

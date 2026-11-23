@@ -24,8 +24,8 @@ export default {
         DEFAULT: "var(--line)",
       },
       fontFamily: {
-        sans: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['"Archivo Variable"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['"Archivo Variable"', "ui-sans-serif", "system-ui", "sans-serif"],
         serif: ['"Instrument Serif"', "ui-serif", "Georgia", "serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "SFMono-Regular", "monospace"],
       },

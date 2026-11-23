@@ -110,7 +110,7 @@
   }
 
   .type-display {
-    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-family: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
     font-stretch: 66%;
     font-weight: 800;
     /* The condensed width shrinks the space glyph too much; restore word separation. */
@@ -207,6 +207,12 @@
   }
 }
 
+/* Hero name waits for its web font (class set in index.html, removed in main.tsx) so the
+   fallback → condensed-Archivo swap can't shift layout. It is under the preloader meanwhile. */
+.fonts-pending .hero-name {
+  visibility: hidden;
+}
+
 /* ------------------------------------------------------------------ */
 /* Custom cursor (only activated on fine pointers by JS)               */
 /* ------------------------------------------------------------------ */
@@ -240,6 +246,22 @@ html.has-cursor textarea {
 }
 .nav-link[data-active="true"]::before {
   transform: scale(1);
+}
+
+/* Case-study title entrance: pure CSS so the prerendered title animates from first paint,
+   without waiting for (or flashing during) hydration. */
+/* Case-study accent ink: separate values keep contrast on the dark and light themes
+   (set per study in src/data/case-studies.ts). */
+.cs-root { --cs-ink: var(--cs-ink-d); }
+:root[data-theme="light"] .cs-root { --cs-ink: var(--cs-ink-l); }
+
+@keyframes cs-rise {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
+.cs-rise {
+  animation: cs-rise 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 150ms);
 }
 
 @keyframes scroll-cue {

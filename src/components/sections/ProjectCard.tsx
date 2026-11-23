@@ -1,4 +1,4 @@
-import { ArrowSwap } from "@/components/ui/Button";
+import { ArrowSwap, Button } from "@/components/ui/Button";
 import { RevealImage } from "@/components/motion/RevealImage";
 import { RevealText } from "@/components/motion/RevealText";
 import { Reveal } from "@/components/motion/Reveal";
@@ -29,7 +29,7 @@ export function ProjectCard({ project, index, total }: ProjectCardProps) {
       alt={project.image.alt}
       parallax={false}
       sizes="(min-width: 1024px) 58vw, 100vw"
-      className="aspect-[16/10] w-full rounded-[3px]"
+      className="aspect-[16/9] w-full rounded-[3px]"
     />
   );
 
@@ -59,17 +59,25 @@ export function ProjectCard({ project, index, total }: ProjectCardProps) {
               <p className="mb-8 font-mono text-xs uppercase tracking-[0.06em] text-muted lg:hidden">
                 {project.tags.join(" · ")}
               </p>
-              {project.link ? (
-                <a href={project.link} {...external} className="group inline-flex items-center gap-3 text-sm font-medium">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] transition-colors duration-500 ease-expo group-hover:border-accent group-hover:bg-accent group-hover:text-accent-fg">
-                    <ArrowSwap className="h-4 w-4" />
-                  </span>
-                  <span className="draw-line pb-0.5">{label}</span>
-                  <span className="sr-only">: {project.title} (opens in a new tab)</span>
-                </a>
-              ) : (
-                <p className="type-meta text-muted">No public link</p>
-              )}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+                {project.caseStudy && (
+                  <Button href={project.caseStudy} variant="solid" className="py-3" data-cursor="Read">
+                    Case study
+                    <span className="sr-only">: {project.title}</span>
+                  </Button>
+                )}
+                {project.link ? (
+                  <a href={project.link} {...external} className="group inline-flex items-center gap-3 text-sm font-medium">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] transition-colors duration-500 ease-expo group-hover:border-accent group-hover:bg-accent group-hover:text-accent-fg">
+                      <ArrowSwap className="h-4 w-4" />
+                    </span>
+                    <span className="draw-line pb-0.5">{label}</span>
+                    <span className="sr-only">: {project.title} (opens in a new tab)</span>
+                  </a>
+                ) : (
+                  <p className="type-meta text-muted">No public link</p>
+                )}
+              </div>
             </Reveal>
           </div>
 

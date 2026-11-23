@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useDeferredMotion } from "@/lib/site-ready";
 import { projects } from "@/data/portfolio";
 import { ProjectCard } from "@/components/sections/ProjectCard";
 import { SectionHeader } from "@/components/sections/SectionHeader";
@@ -8,8 +9,10 @@ export function ProjectSection() {
   const root = useRef<HTMLElement>(null);
 
   // Desktop deck: as each card slides over the previous one, the previous card recedes.
+  const deferredMotion = useDeferredMotion();
   useGSAP(
     () => {
+      if (!deferredMotion) return; // below-the-fold: set up after the hero intro (see Portfolio.tsx)
       gsap.matchMedia().add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
         const cards = gsap.utils.toArray<HTMLElement>(".project-card", root.current);
         cards.slice(0, -1).forEach((card, i) => {
@@ -19,7 +22,7 @@ export function ProjectSection() {
         });
       });
     },
-    { scope: root },
+    { scope: root, dependencies: [deferredMotion] },
   );
 
   return (

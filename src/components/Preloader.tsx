@@ -111,7 +111,7 @@ export function Preloader({ onReveal }: { onReveal: () => void }) {
       role="status"
       aria-live="polite"
       aria-label="Loading portfolio"
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-bg text-fg gutter py-5 md:py-7 [clip-path:inset(0%_0%_0%_0%)]"
+      className="fixed inset-0 z-[100] flex flex-col justify-between [contain:strict] bg-bg text-fg gutter py-5 md:py-7 [clip-path:inset(0%_0%_0%_0%)]"
     >
       <div className="type-meta flex items-start justify-between text-muted">
         <span className="mask"><span className="pl-rise block">{profile.handle}</span></span>
@@ -126,7 +126,8 @@ export function Preloader({ onReveal }: { onReveal: () => void }) {
         </div>
         <p className="type-display flex items-start text-[clamp(6rem,min(24vw,42svh),22rem)] leading-[0.8] tracking-[-0.03em] tabular-nums">
           <span className="mask">
-            <span ref={counter} className="pl-rise block">0</span>
+            {/* Fixed 3-digit width (tabular figures) so counting 0 → 100 never shifts layout. */}
+            <span ref={counter} className="pl-rise block min-w-[3ch] text-right">0</span>
           </span>
           <span className="mask pr-[0.06em]">
             <span className="pl-rise block text-[0.4em] text-accent-ink">%</span>

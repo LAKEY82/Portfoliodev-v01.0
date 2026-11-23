@@ -1,12 +1,15 @@
 // Single source of truth for all portfolio content.
 // Edit text, links and projects here — components only render this data.
 
-import barista from "@/assets/Images/web/barista.webp";
-import baristaSmall from "@/assets/Images/web/barista-800.webp";
-import bingChun from "@/assets/Images/web/bing-chun.webp";
-import bingChunSmall from "@/assets/Images/web/bing-chun-800.webp";
-import pdfSwami from "@/assets/Images/web/pdf-swami.webp";
-import pdfSwamiSmall from "@/assets/Images/web/pdf-swami-800.webp";
+// Showcase thumbnails (sources: src/assets/Images/thumbnails/*.png)
+import hirelane from "@/assets/Images/web/hirelane.webp";
+import hirelaneSmall from "@/assets/Images/web/hirelane-800.webp";
+import barista from "@/assets/Images/web/barista-showcase.webp";
+import baristaSmall from "@/assets/Images/web/barista-showcase-800.webp";
+import bingChun from "@/assets/Images/web/bing-chun-showcase.webp";
+import bingChunSmall from "@/assets/Images/web/bing-chun-showcase-800.webp";
+import pdfSwami from "@/assets/Images/web/pdf-swami-showcase.webp";
+import pdfSwamiSmall from "@/assets/Images/web/pdf-swami-showcase-800.webp";
 import lifeLk from "@/assets/Images/web/lifelk.webp";
 import lifeLkSmall from "@/assets/Images/web/lifelk-800.webp";
 import cafe from "@/assets/Images/web/cafe.webp";
@@ -121,33 +124,53 @@ export type Project = {
   link?: string;
   /** Text for the link and custom cursor. */
   linkLabel?: string;
+  /** Path of the project's case-study page, if it has one. */
+  caseStudy?: string;
 };
 
 export const projects: Project[] = [
   {
+    title: "HireLane",
+    category: "AI Web Application",
+    description:
+      "An AI recruitment tool that turns a hiring inbox into a shortlist. It reads applications straight from Gmail or a company mailbox, uses AI to pull out each candidate's skills and experience, sorts every CV, and sends kind, personal rejection emails in one click.",
+    image: shot(
+      hirelane,
+      hirelaneSmall,
+      "HireLane on a laptop: the overview dashboard with applicant, to-review, shortlisted and rejected counts, beside the sign-in screen",
+    ),
+    tags: ["Next.js", "React", "Tailwind CSS", "AI"],
+    link: "https://hirelanehr.netlify.app/login",
+    linkLabel: "Open app",
+    caseStudy: "/work/hirelane",
+  },
+  {
     title: "Barista Website Redesign",
     category: "Web Application",
     description: "A website redesign for the Sri Lankan brand Barista website developed using Framer.",
-    image: shot(barista, baristaSmall, "Barista redesign home page on a laptop: the Barista wordmark repeated behind an iced coffee drink"),
+    image: shot(barista, baristaSmall, "Barista redesign on a laptop: an orange hero with the Barista wordmark repeated behind an iced caramel drink, built in Framer"),
     tags: ["Framer"],
     link: "https://barista-redesign.framer.website/",
+    caseStudy: "/work/barista",
   },
   {
     title: "Bing Chun Website Redesign",
     category: "Web Application",
     description: "A website developed using Framer as a redesign for the current website of the brand Bing Chun.",
-    image: shot(bingChun, bingChunSmall, "Bing Chun redesign home page on a laptop with the headline “Freshly shaken bubble tea & cream” above a bubble tea cup"),
+    image: shot(bingChun, bingChunSmall, "Bing Chun redesign on a laptop with the headline “Freshly shaken bubble tea & cream”, beside a signature teas menu page"),
     tags: ["Framer"],
     link: "https://bing-chun-redesign.framer.website/",
+    caseStudy: "/work/bing-chun",
   },
   {
     title: "PDF-Swami",
     category: "Web Application",
     description:
       "A modern PDF editor with a sleek interface, built using React, TypeScript, and Tailwind CSS. It offers features like text editing, annotations, and form filling, all powered by a custom PDF rendering engine for smooth performance.",
-    image: shot(pdfSwami, pdfSwamiSmall, "PDF-Swami landing page on a laptop with the headline “Free Forever & Private” and a Start For Free button"),
+    image: shot(pdfSwami, pdfSwamiSmall, "PDF-Swami on a laptop with the headline “Free Forever & Private”, beside a PDF being converted to Word and text"),
     tags: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     link: "https://pdfswami.vercel.app/",
+    caseStudy: "/work/pdf-swami",
   },
   {
     title: "LifeLk",
